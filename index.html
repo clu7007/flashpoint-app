@@ -3,25 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Palais de Mémoire - 思維宮殿</title>
+    <title>Le Palais de Mémoire - 雲端思維宮殿</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Pinyon+Script&display=swap" rel="stylesheet">
+    
     <style>
+        /* --- 巴洛克洛可可 (Baroque Rococo) 極致樣式表 --- */
         :root {
             --gold: #d4af37;
+            --gold-dim: #b8860b;
             --gold-light: #f3e5ab;
             --cream: #fffdd0;
             --pastel-pink: #fce1e4;
             --royal-blue: #2c3e50;
-            --text-main: #4a4a4a;
-            --shadow-elevation: 0 10px 20px rgba(0,0,0,0.15), 0 6px 6px rgba(0,0,0,0.1);
+            --text-main: #2b2b2b;
+            --shadow-elevation: 0 10px 30px rgba(212, 175, 55, 0.15), 0 4px 10px rgba(0,0,0,0.05);
+            --glass: rgba(255, 255, 255, 0.9);
         }
 
         body {
             margin: 0;
             background-color: var(--cream);
+            /* 複雜的背景紋理 */
             background-image: 
-                radial-gradient(circle at 100% 50%, transparent 20%, rgba(212, 175, 55, 0.1) 21%, rgba(212, 175, 55, 0.1) 34%, transparent 35%, transparent),
-                radial-gradient(circle at 0% 50%, transparent 20%, rgba(212, 175, 55, 0.1) 21%, rgba(212, 175, 55, 0.1) 34%, transparent 35%, transparent) center center;
+                radial-gradient(circle at 100% 50%, transparent 20%, rgba(212, 175, 55, 0.05) 21%, rgba(212, 175, 55, 0.05) 34%, transparent 35%, transparent),
+                radial-gradient(circle at 0% 50%, transparent 20%, rgba(212, 175, 55, 0.05) 21%, rgba(212, 175, 55, 0.05) 34%, transparent 35%, transparent) center center;
             background-size: 100px 100px;
             color: var(--text-main);
             font-family: 'Playfair Display', serif;
@@ -31,70 +40,74 @@
             overflow-x: hidden;
         }
 
-        /* 華麗的卷軸 */
-        ::-webkit-scrollbar { width: 10px; }
+        /* 卷軸美化 */
+        ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--cream); }
-        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 5px; border: 2px solid var(--cream); }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(var(--gold), var(--gold-dim)); border-radius: 4px; }
 
-        /* header */
         header {
             text-align: center;
-            padding: 40px 20px;
-            border-bottom: 3px double var(--gold);
+            padding: 50px 20px;
+            border-bottom: 4px double var(--gold);
             background: linear-gradient(to bottom, #fff, var(--pastel-pink));
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.2);
             position: relative;
+            z-index: 10;
         }
 
         h1 {
             font-family: 'Pinyon Script', cursive;
-            font-size: 3.5rem;
-            color: var(--gold);
+            font-size: 4rem;
+            color: var(--gold-dim);
             margin: 0;
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            line-height: 1.2;
         }
 
         .subtitle {
             font-family: 'Cinzel', serif;
             font-size: 0.9rem;
-            letter-spacing: 4px;
+            letter-spacing: 6px;
             margin-top: 10px;
             color: var(--royal-blue);
+            text-transform: uppercase;
         }
 
-        /* 裝飾線 */
         .ornament {
-            font-size: 2rem;
+            font-size: 2.5rem;
             color: var(--gold);
             margin: 10px 0;
             display: block;
+            opacity: 0.8;
         }
 
         /* 主容器 */
         .container {
-            max-width: 900px;
+            max-width: 850px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 30px 20px;
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 40px;
         }
 
-        /* 輸入區：像是一張精美的信紙 */
+        /* 輸入面板：像一張羊皮紙信件 */
         .input-panel {
-            background: #fff;
+            background: var(--glass);
             border: 1px solid var(--gold);
-            border-radius: 8px;
-            padding: 25px;
+            border-radius: 4px;
+            padding: 30px;
             box-shadow: var(--shadow-elevation);
             position: relative;
+            backdrop-filter: blur(5px);
         }
 
+        /* 雙線邊框裝飾 */
         .input-panel::before {
             content: '';
             position: absolute;
-            top: 5px; left: 5px; right: 5px; bottom: 5px;
+            top: 6px; left: 6px; right: 6px; bottom: 6px;
             border: 1px solid var(--gold-light);
             pointer-events: none;
         }
@@ -107,191 +120,279 @@
             outline: none;
             color: var(--text-main);
             box-sizing: border-box;
+            transition: 0.3s;
         }
 
         #note-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 15px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
             border-bottom: 1px dashed var(--gold);
-            padding-bottom: 5px;
+            padding-bottom: 10px;
+            color: var(--royal-blue);
         }
+        #note-title::placeholder { color: #d4af3780; font-style: italic; }
 
         #note-content {
-            font-size: 1.1rem;
-            min-height: 120px;
+            font-size: 1.2rem;
+            min-height: 150px;
             line-height: 1.8;
             resize: vertical;
         }
+        #note-content::placeholder { color: #aaa; }
 
         .controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 20px;
+            margin-top: 25px;
             border-top: 1px solid var(--gold-light);
-            padding-top: 15px;
+            padding-top: 20px;
         }
 
-        /* 洛可可按鈕 */
+        /* 貴族按鈕 */
         button {
-            background: linear-gradient(135deg, var(--gold), #b8860b);
+            background: linear-gradient(135deg, var(--gold), var(--gold-dim));
             color: white;
             border: none;
-            padding: 10px 25px;
+            padding: 12px 30px;
             font-family: 'Cinzel', serif;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            letter-spacing: 1px;
             position: relative;
             overflow: hidden;
         }
 
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(212, 175, 55, 0.4);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+        }
+        
+        button:active { transform: translateY(1px); }
+
+        /* 搜尋與狀態列 */
+        .status-bar {
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            padding: 15px;
+            background: rgba(255, 253, 208, 0.95);
+            border-bottom: 1px solid var(--gold-light);
+            backdrop-filter: blur(5px);
+            margin: -20px -20px 20px -20px; /* 負 margin 讓它滿版 */
         }
 
-        button::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(255,255,255,0.2), transparent);
+        #search-box {
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+            width: 60%;
+            padding: 8px;
+            font-size: 1.1rem;
+            font-family: 'Cinzel', serif;
+            color: var(--gold-dim);
         }
+        #search-box:focus { border-bottom-color: var(--royal-blue); }
 
-        /* 筆記卡片流 */
+        /* 筆記流 */
         .stream {
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 35px;
         }
 
         .card {
             background: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            padding: 30px;
+            border: 1px solid transparent;
+            border-radius: 2px;
+            padding: 40px;
             position: relative;
             box-shadow: var(--shadow-elevation);
-            transition: transform 0.3s ease;
+            transition: all 0.4s ease;
+            animation: fadeIn 0.6s ease-out;
         }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .card:hover {
-            transform: translateY(-3px);
-            border-color: var(--gold);
+            border-color: var(--gold-light);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.2);
         }
 
-        /* 裝飾性邊角 */
+        /* 卡片四角裝飾 */
         .corner {
             position: absolute;
-            width: 20px; height: 20px;
+            width: 15px; height: 15px;
             border: 2px solid var(--gold);
-            transition: all 0.3s;
+            transition: 0.3s;
+            opacity: 0.5;
         }
-        .c-tl { top: 5px; left: 5px; border-right: none; border-bottom: none; }
-        .c-tr { top: 5px; right: 5px; border-left: none; border-bottom: none; }
-        .c-bl { bottom: 5px; left: 5px; border-right: none; border-top: none; }
-        .c-br { bottom: 5px; right: 5px; border-left: none; border-top: none; }
+        .card:hover .corner { opacity: 1; width: 25px; height: 25px; }
+        .c-tl { top: 8px; left: 8px; border-right: none; border-bottom: none; }
+        .c-tr { top: 8px; right: 8px; border-left: none; border-bottom: none; }
+        .c-bl { bottom: 8px; left: 8px; border-right: none; border-top: none; }
+        .c-br { bottom: 8px; right: 8px; border-left: none; border-top: none; }
 
         .card-meta {
             font-family: 'Cinzel', serif;
-            font-size: 0.8rem;
-            color: #999;
-            margin-bottom: 10px;
+            font-size: 0.75rem;
+            color: #aaa;
+            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .card-title {
-            font-size: 1.8rem;
+            font-size: 2rem;
             color: var(--royal-blue);
-            margin: 0 0 15px 0;
+            margin: 0 0 20px 0;
             font-weight: 700;
+            line-height: 1.3;
         }
 
         .card-body {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 20px;
+            font-size: 1.15rem;
+            line-height: 1.9;
+            color: #444;
+            margin-bottom: 25px;
         }
 
-        /* Zettelkasten 連結樣式 */
+        /* 特殊語法樣式 */
         .zettel-link {
             color: #c0392b;
+            font-weight: bold;
             text-decoration: none;
-            border-bottom: 1px solid var(--gold);
-            background: rgba(255, 253, 208, 0.5);
-            padding: 0 4px;
+            border-bottom: 2px solid var(--gold-light);
             cursor: pointer;
-            transition: all 0.2s;
+            padding: 0 4px;
+            transition: 0.3s;
+            background: linear-gradient(to top, var(--gold-light) 50%, transparent 50%);
+            background-size: 100% 200%;
+            background-position: top;
         }
         .zettel-link:hover {
-            background: var(--gold);
-            color: white;
+            color: #fff;
+            background-position: bottom;
         }
 
-        /* 互動區 (Actions) */
+        .tag {
+            display: inline-block;
+            font-size: 0.85rem;
+            color: var(--gold-dim);
+            border: 1px solid var(--gold);
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-right: 8px;
+            font-family: 'Cinzel', serif;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .tag:hover { background: var(--gold); color: white; }
+
+        /* 互動區 */
         .actions {
             display: flex;
-            gap: 20px;
-            padding-top: 15px;
+            gap: 25px;
+            padding-top: 20px;
             border-top: 1px solid #eee;
+            align-items: center;
         }
 
         .action-btn {
             background: none;
-            color: #999;
+            color: #bbb;
             box-shadow: none;
-            padding: 5px 10px;
-            font-size: 1.2rem;
+            padding: 8px 15px;
+            font-size: 1rem;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
+            border-radius: 8px;
         }
         .action-btn:hover {
+            color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
             transform: none;
             box-shadow: none;
-            color: var(--gold);
         }
-        .action-btn.active {
-            color: #e74c3c;
-        }
+        .action-btn.active { color: #e74c3c; font-weight: bold; }
+        .action-btn.bookmarked { color: var(--gold); font-weight: bold; }
 
         /* 評論區 */
         .comments-section {
             background: #fafafa;
-            margin-top: 15px;
-            padding: 15px;
-            border-radius: 4px;
-            font-size: 0.9rem;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 0 0 4px 4px;
             border-left: 3px solid var(--gold);
-            display: none; /* 預設隱藏 */
+            display: none;
+            animation: fadeIn 0.3s;
         }
         
+        .comment-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95rem;
+            color: #555;
+        }
+        .comment-item:last-child { border: none; }
+        .comment-author { font-family: 'Cinzel'; font-weight: bold; color: var(--gold-dim); margin-right: 10px; }
+
+        .comment-input-wrapper {
+            display: flex;
+            margin-top: 15px;
+            gap: 10px;
+        }
         .comment-input {
-            width: 100%;
+            flex: 1;
             border: 1px solid #ddd;
-            padding: 8px;
-            margin-top: 10px;
+            padding: 10px;
             background: white;
+            font-family: inherit;
+        }
+        .comment-submit {
+            padding: 5px 15px;
+            font-size: 0.8rem;
         }
 
-        /* 標籤 */
-        .tags {
-            margin-top: 10px;
-        }
-        .tag {
-            display: inline-block;
-            font-size: 0.8rem;
+        /* 載入指示器 */
+        #loader {
+            text-align: center;
             color: var(--gold);
-            border: 1px solid var(--gold);
-            padding: 2px 8px;
-            border-radius: 12px;
-            margin-right: 5px;
-            font-family: 'Cinzel', serif;
+            font-family: 'Cinzel';
+            margin: 20px 0;
+            display: none;
         }
+
+        /* 刪除按鈕 (隱藏式) */
+        .delete-btn {
+            margin-left: auto;
+            color: #ddd;
+            font-size: 0.9rem;
+        }
+        .delete-btn:hover { color: #ff5555; }
+        
+        /* 過濾狀態提示 */
+        #filter-banner {
+            display: none;
+            background: var(--royal-blue);
+            color: var(--cream);
+            padding: 10px;
+            text-align: center;
+            font-family: 'Cinzel';
+            cursor: pointer;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        #filter-banner:hover { opacity: 0.9; }
 
     </style>
 </head>
@@ -300,7 +401,7 @@
     <header>
         <div class="ornament">❦</div>
         <h1>FlashPoint</h1>
-        <div class="subtitle">The Baroque Zettelkasten</div>
+        <div class="subtitle">The Baroque Cloud Palace</div>
         <div class="ornament">❧</div>
     </header>
 
@@ -308,97 +409,218 @@
         
         <div class="input-panel">
             <input type="text" id="note-title" placeholder="Title of your thought...">
-            <textarea id="note-content" placeholder="Write your insights... Use [[WikiLinks]] to connect ideas."></textarea>
+            <textarea id="note-content" placeholder="Write your insights... Use #tags or [[WikiLinks]] to connect ideas."></textarea>
             <div class="controls">
-                <span style="font-family: 'Pinyon Script'; font-size: 1.2rem; color: var(--gold);">Capture the fleeting moment...</span>
-                <button onclick="saveNote()">Enshrine Note</button>
+                <span style="font-family: 'Pinyon Script'; font-size: 1.4rem; color: var(--gold);">Capture the fleeting moment...</span>
+                <button onclick="addNote()">Enshrine to Cloud</button>
             </div>
         </div>
 
-        <div style="text-align: center;">
-            <input type="text" id="search-box" placeholder="Search your palace..." style="text-align: center; border-bottom: 1px solid var(--gold); width: 50%; padding: 10px;" onkeyup="renderStream()">
+        <div class="status-bar">
+            <input type="text" id="search-box" placeholder="Search your palace..." onkeyup="handleSearch()">
+        </div>
+        
+        <div id="filter-banner" onclick="clearFilter()">
+            Filtering by: <span id="filter-term"></span> (Click to clear)
         </div>
 
+        <div id="loader">Syncing with the Ether...</div>
+        
         <div class="stream" id="stream">
             </div>
 
     </div>
 
     <script>
-        // 初始化資料
-        let notes = JSON.parse(localStorage.getItem('rococo_notes') || '[]');
+        // =================================================================
+        // 1. Firebase 設定 (使用你提供的金鑰)
+        // =================================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyCtduCS2DRpcn6oImQia_O5RlZCRAzihT8",
+            authDomain: "flashpoint-sync.firebaseapp.com",
+            projectId: "flashpoint-sync",
+            storageBucket: "flashpoint-sync.firebasestorage.app",
+            messagingSenderId: "458374918600",
+            appId: "1:458374918600:web:f7a5a39a9fef2ce26410fd",
+            measurementId: "G-R71QYYZPCW"
+        };
 
-        function saveNote() {
+        // 初始化 Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        // 全域變數
+        let allNotes = [];
+        let currentFilter = '';
+
+        // =================================================================
+        // 2. 核心邏輯
+        // =================================================================
+
+        // 啟動監聽 (Real-time Sync)
+        function initApp() {
+            document.getElementById('loader').style.display = 'block';
+            
+            // 監聽 notes 集合，按時間倒序
+            db.collection("notes").orderBy("timestamp", "desc")
+                .onSnapshot((snapshot) => {
+                    allNotes = [];
+                    snapshot.forEach((doc) => {
+                        allNotes.push({ id: doc.id, ...doc.data() });
+                    });
+                    document.getElementById('loader').style.display = 'none';
+                    renderStream(); // 資料變更時自動重繪
+                }, (error) => {
+                    console.error("Sync Error:", error);
+                    document.getElementById('loader').innerText = "Connection Error (Check Console)";
+                });
+        }
+
+        // 新增筆記
+        function addNote() {
             const titleInput = document.getElementById('note-title');
             const contentInput = document.getElementById('note-content');
             
             const title = titleInput.value.trim();
             const content = contentInput.value.trim();
 
-            if (!content) return;
+            if (!content) return; // 空內容不存
 
-            // Zettelkasten ID: 時間戳記
-            const id = Date.now().toString();
-            
-            // 自動提取標籤
+            // 提取標籤 (例如 #idea #cool)
             const tags = content.match(/#[\w\u4e00-\u9fa5]+/g) || [];
 
-            const newNote = {
-                id: id,
-                title: title || `Untitled Fragment ${new Date().toLocaleDateString()}`,
+            db.collection("notes").add({
+                title: title || `Untitled Fragment`,
                 content: content,
                 tags: tags,
-                timestamp: new Date().toLocaleString(),
+                timestamp: Date.now(),
                 likes: 0,
                 isBookmarked: false,
                 comments: []
-            };
-
-            notes.unshift(newNote);
-            localStorage.setItem('rococo_notes', JSON.stringify(notes));
-
-            // 清空並重繪
-            titleInput.value = '';
-            contentInput.value = '';
-            renderStream();
-        }
-
-        // 渲染 Zettelkasten 連結
-        function processLinks(text) {
-            // 將 [[Title]] 轉換為可點擊的 span
-            return text.replace(/\[\[(.*?)\]\]/g, (match, p1) => {
-                return `<span class="zettel-link" onclick="filterByLink('${p1}')">❦ ${p1}</span>`;
+            }).then(() => {
+                // 成功後清空輸入框
+                titleInput.value = '';
+                contentInput.value = '';
+                // 震動回饋 (手機端)
+                if(navigator.vibrate) navigator.vibrate(50);
+            }).catch((err) => {
+                alert("Upload failed: " + err.message);
             });
         }
 
-        // 渲染主畫面
-        function renderStream(filterText = '') {
-            const stream = document.getElementById('stream');
-            const searchVal = document.getElementById('search-box').value.toLowerCase();
-            const finalFilter = filterText.toLowerCase() || searchVal;
+        // 刪除筆記
+        function deleteNote(id) {
+            if(confirm("Are you sure you want to burn this memory forever?")) {
+                db.collection("notes").doc(id).delete();
+            }
+        }
 
+        // =================================================================
+        // 3. 互動功能 (按讚、收藏、評論)
+        // =================================================================
+
+        function toggleLike(id, currentLikes) {
+            // 簡單累加，實際應用通常會紀錄 user ID 防止重複按讚
+            db.collection("notes").doc(id).update({
+                likes: (currentLikes || 0) + 1
+            });
+        }
+
+        function toggleBookmark(id, currentStatus) {
+            db.collection("notes").doc(id).update({
+                isBookmarked: !currentStatus
+            });
+        }
+
+        function toggleCommentSection(id) {
+            const section = document.getElementById(`comments-${id}`);
+            if (section.style.display === 'block') {
+                section.style.display = 'none';
+            } else {
+                section.style.display = 'block';
+            }
+        }
+
+        function submitComment(id, inputId) {
+            const input = document.getElementById(inputId);
+            const val = input.value.trim();
+            if (!val) return;
+
+            // 這裡需要先讀取現有評論再寫入 array (Firestore arrayUnion 較佳但此處用簡單讀取法)
+            const note = allNotes.find(n => n.id === id);
+            const newComments = [...(note.comments || []), val];
+            
+            db.collection("notes").doc(id).update({
+                comments: newComments
+            });
+            input.value = ''; // 清空
+        }
+
+        // =================================================================
+        // 4. 渲染與過濾 (UI Render)
+        // =================================================================
+
+        function handleSearch() {
+            const val = document.getElementById('search-box').value;
+            currentFilter = val.toLowerCase();
+            renderStream();
+        }
+
+        function setFilter(term) {
+            currentFilter = term.toLowerCase();
+            document.getElementById('search-box').value = term;
+            document.getElementById('filter-banner').style.display = 'block';
+            document.getElementById('filter-term').innerText = term;
+            renderStream();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function clearFilter() {
+            currentFilter = '';
+            document.getElementById('search-box').value = '';
+            document.getElementById('filter-banner').style.display = 'none';
+            renderStream();
+        }
+
+        function renderStream() {
+            const stream = document.getElementById('stream');
             stream.innerHTML = '';
 
-            const filteredNotes = notes.filter(n => 
-                n.content.toLowerCase().includes(finalFilter) || 
-                n.title.toLowerCase().includes(finalFilter)
-            );
+            // 過濾邏輯
+            const filtered = allNotes.filter(n => {
+                if (!currentFilter) return true;
+                const text = (n.title + n.content + (n.tags||[]).join('')).toLowerCase();
+                return text.includes(currentFilter);
+            });
 
-            filteredNotes.forEach(note => {
+            filtered.forEach(note => {
                 const card = document.createElement('div');
                 card.className = 'card';
                 
-                // 處理內文連結
-                const processedContent = processLinks(note.content);
-                
-                // 標籤 HTML
-                const tagsHtml = note.tags.map(t => `<span class="tag">${t}</span>`).join('');
+                // 格式化時間
+                const date = new Date(note.timestamp);
+                const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
-                // 評論 HTML
-                const commentsHtml = note.comments.map(c => 
-                    `<div style="border-bottom:1px solid #eee; padding:5px 0;">
-                        <span style="color:#b8860b;">User:</span> ${c}
-                    </div>`
+                // 處理內容中的特殊語法
+                // 1. [[WikiLinks]] -> 點擊過濾
+                let processedContent = note.content.replace(/\[\[(.*?)\]\]/g, 
+                    `<span class="zettel-link" onclick="setFilter('$1')">❦ $1</span>`
+                );
+                // 2. #Tags -> 點擊過濾
+                processedContent = processedContent.replace(/(#[\w\u4e00-\u9fa5]+)/g, 
+                    `<span class="tag" onclick="setFilter('$1')">$1</span>`
+                );
+
+                // 生成標籤 HTML
+                const tagsHtml = (note.tags || []).map(t => 
+                    `<span class="tag" onclick="setFilter('${t}')">${t}</span>`
+                ).join('');
+
+                // 生成評論 HTML
+                const commentsHtml = (note.comments || []).map(c => 
+                    `<div class="comment-item"><span class="comment-author">Visitor:</span> ${c}</div>`
                 ).join('');
 
                 card.innerHTML = `
@@ -406,91 +628,47 @@
                     <div class="corner c-bl"></div><div class="corner c-br"></div>
                     
                     <div class="card-meta">
-                        <span>ID: ${note.id.slice(-6)}</span>
-                        <span>${note.timestamp}</span>
+                        <span>ID: ${note.id.slice(-6).toUpperCase()}</span>
+                        <span>${dateStr}</span>
                     </div>
                     
                     <h2 class="card-title">${note.title}</h2>
                     <div class="card-body">${processedContent}</div>
-                    <div class="tags">${tagsHtml}</div>
-
+                    
                     <div class="actions">
-                        <button class="action-btn ${note.likes > 0 ? 'active' : ''}" onclick="toggleLike('${note.id}')">
-                            ♥ ${note.likes}
+                        <button class="action-btn ${note.likes > 0 ? 'active' : ''}" onclick="toggleLike('${note.id}', ${note.likes})">
+                            ♥ ${note.likes || 0}
                         </button>
-                        <button class="action-btn ${note.isBookmarked ? 'active' : ''}" onclick="toggleBookmark('${note.id}')">
-                            ★
+                        <button class="action-btn ${note.isBookmarked ? 'bookmarked' : ''}" onclick="toggleBookmark('${note.id}', ${note.isBookmarked})">
+                            ★ Bookmark
                         </button>
-                        <button class="action-btn" onclick="toggleComments('${note.id}')">
-                            ✎ Comment
+                        <button class="action-btn" onclick="toggleCommentSection('${note.id}')">
+                            ✎ Comment (${(note.comments||[]).length})
                         </button>
-                        <button class="action-btn" style="margin-left:auto; font-size:0.9rem;" onclick="deleteNote('${note.id}')">
+                        <button class="action-btn delete-btn" onclick="deleteNote('${note.id}')">
                             ✕
                         </button>
                     </div>
 
                     <div id="comments-${note.id}" class="comments-section">
-                        <div id="comment-list-${note.id}">${commentsHtml}</div>
-                        <input type="text" class="comment-input" placeholder="Add a critique..." 
-                            onkeydown="if(event.key === 'Enter') addComment('${note.id}', this)">
+                        <div class="comment-list">${commentsHtml}</div>
+                        <div class="comment-input-wrapper">
+                            <input type="text" id="input-${note.id}" class="comment-input" placeholder="Add your critique..." 
+                                onkeydown="if(event.key==='Enter') submitComment('${note.id}', 'input-${note.id}')">
+                            <button class="comment-submit" onclick="submitComment('${note.id}', 'input-${note.id}')">Send</button>
+                        </div>
                     </div>
                 `;
                 stream.appendChild(card);
             });
-        }
 
-        // 功能函數
-        function toggleLike(id) {
-            const note = notes.find(n => n.id === id);
-            if(note) {
-                note.likes = note.likes ? 0 : 1; // 簡單切換，或做累加
-                saveAndRender();
+            if (filtered.length === 0) {
+                stream.innerHTML = `<div style="text-align:center; color:#ccc; font-family:'Cinzel'; margin-top:50px;">The palace is silent...</div>`;
             }
         }
 
-        function toggleBookmark(id) {
-            const note = notes.find(n => n.id === id);
-            if(note) {
-                note.isBookmarked = !note.isBookmarked;
-                saveAndRender();
-            }
-        }
-
-        function toggleComments(id) {
-            const el = document.getElementById(`comments-${id}`);
-            el.style.display = el.style.display === 'none' || el.style.display === '' ? 'block' : 'none';
-        }
-
-        function addComment(id, input) {
-            const val = input.value.trim();
-            if(!val) return;
-            
-            const note = notes.find(n => n.id === id);
-            if(note) {
-                note.comments.push(val);
-                input.value = '';
-                saveAndRender();
-            }
-        }
-
-        function deleteNote(id) {
-            if(!confirm("Are you sure you want to burn this memory?")) return;
-            notes = notes.filter(n => n.id !== id);
-            saveAndRender();
-        }
-
-        function filterByLink(text) {
-            document.getElementById('search-box').value = text;
-            renderStream(text);
-        }
-
-        function saveAndRender() {
-            localStorage.setItem('rococo_notes', JSON.stringify(notes));
-            renderStream();
-        }
-
-        // 啟動
-        renderStream();
+        // 啟動 App
+        initApp();
 
     </script>
 </body>
