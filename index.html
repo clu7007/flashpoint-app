@@ -1,1 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FlashPoint - 靈感瞬捕</title>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --text-color: #e0e0e0;
+            --accent-color: #00ff88; /* 科技綠 */
+            --record-color: #ff4444; /* 錄音紅 */
+        }
 
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* 頂部狀態列 */
+        .header {
+            padding: 20px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.5;
+            text-align: center;
+        }
+
+        /* 中央捕捉區 */
+        .capture-zone {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* 呼吸光點按鈕 */
+        #capture-btn {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 呼吸動畫 */
+        @keyframes breathe {
+            0% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); transform: scale(1); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 136, 0.5); transform: scale(1.05); }
+            100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); transform: scale(1); }
+        }
+
+        #capture-btn.idle {
+            animation: breathe 3s infinite ease-in-out;
+        }
+
+        #capture-btn.recording {
+            background-color: rgba(255, 68, 68, 0.2);
+            border-color: var(--record-color);
+            box-shadow: 0 0 50px var(--record-color);
+            transform: scale(1.2);
+        }
+
+        #status-text {
+            position: absolute;
+            bottom: 20%;
+            font-size: 16px;
+            opacity: 0.7;
+            font-weight: 300;
+        }
+
+        /* 底部列表區 (簡易版星雲) */
+        .nebula-list {
+            height: 30%;
+            background: #111;
+            border-top: 1px solid #333;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .thought-item {
+            background: #1a1a1a;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-color);
+            font-size: 14px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .thought-time {
+            font-size: 10px;
+            color: #666;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">FlashPoint v0.1</div>
+
+    <div class="capture-zone">
+        <div id="capture-btn" class="idle">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" x2="12" y1="19" y2="22"/>
+            </svg>
+        </div>
+        <div id="status-text">按住捕捉靈感</div>
+    </div>
+
+    <div class="nebula-list" id="thought-list">
+        </div>
+
+    <script>
+        // DOM 元素
+        const btn = document.getElementById('capture-btn');
+        const statusText = document.getElementById('status-text');
+        const list = document.getElementById('thought-list');
+
+        // Web Speech API 設定
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition;
+        let isRecording = false;
+
+        // 初始化語音識別
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.lang = 'zh-TW'; // 設定為中文
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            // 當收到語音結果時
+            recognition.onresult = (event) => {
+                const transcript = Array.from(event.results)
+                    .map(result => result[0].transcript)
+                    .join('');
+                statusText.innerText = transcript; // 即時顯示文字
+            };
+
+            recognition.onerror = (event) => {
+                console.error(event.error);
+                statusText.innerText = "麥克風存取錯誤";
+            };
+        } else {
+            statusText.innerText = "瀏覽器不支援語音，請用打字";
+            // 這裡可以加入點擊彈出鍵盤的邏輯
+        }
+
+        // 儲存靈感
+        function saveThought(text) {
+            if (!text || text === "按住捕捉靈感") return;
+            
+            const thought = {
+                id: Date.now(),
+                text: text,
+                timestamp: new Date().toLocaleString()
+            };
+
+            // 存入 LocalStorage
+            let thoughts = JSON.parse(localStorage.getItem('flashpoint_thoughts') || '[]');
+            thoughts.unshift(thought);
+            localStorage.setItem('flashpoint_thoughts', JSON.stringify(thoughts));
+
+            renderList();
+        }
+
+        // 渲染列表
+        function renderList() {
+            const thoughts = JSON.parse(localStorage.getItem('flashpoint_thoughts') || '[]');
+            list.innerHTML = thoughts.map(t => `
+                <div class="thought-item">
+                    <span class="thought-time">${t.timestamp}</span>
+                    ${t.text}
+                </div>
+            `).join('');
+        }
+
+        // 按鈕互動邏輯 (支援滑鼠與觸控)
+        const startRecord = (e) => {
+            e.preventDefault(); // 防止長按選取文字
+            if (!recognition) return;
+            isRecording = true;
+            btn.classList.remove('idle');
+            btn.classList.add('recording');
+            statusText.innerText = "聆聽中...";
+            recognition.start();
+        };
+
+        const stopRecord = () => {
+            if (!isRecording) return;
+            isRecording = false;
+            btn.classList.remove('recording');
+            btn.classList.add('idle');
+            recognition.stop();
+            
+            // 延遲一下讓最終結果出來後再儲存
+            setTimeout(() => {
+                saveThought(statusText.innerText);
+                statusText.innerText = "按住捕捉靈感";
+            }, 500);
+        };
+
+        // 綁定事件
+        btn.addEventListener('mousedown', startRecord);
+        btn.addEventListener('mouseup', stopRecord);
+        btn.addEventListener('mouseleave', stopRecord); // 防止滑鼠移出按鈕卡住
+
+        btn.addEventListener('touchstart', startRecord);
+        btn.addEventListener('touchend', stopRecord);
+
+        // 初始化
+        renderList();
+    </script>
+</body>
+</html>
