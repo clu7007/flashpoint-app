@@ -38,11 +38,10 @@
             font-family: 'Playfair Display', serif;
             min-height: 100vh;
             display: flex;
-            flex-direction: row; /* 預設桌面版為左右佈局 */
+            flex-direction: row;
             overflow-x: hidden;
         }
 
-        /* 卷軸美化 */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--cream); }
         ::-webkit-scrollbar-thumb { background: linear-gradient(var(--gold), var(--gold-dim)); border-radius: 4px; }
@@ -64,9 +63,7 @@
             transition: transform 0.3s ease;
         }
 
-        .brand {
-            text-align: center; margin-bottom: 40px;
-        }
+        .brand { text-align: center; margin-bottom: 40px; }
         .brand h1 {
             font-family: 'Pinyon Script', cursive; font-size: 2.8rem; color: var(--gold-dim); margin: 0;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
@@ -75,40 +72,24 @@
 
         .nav-menu { list-style: none; padding: 0; margin: 0; flex: 1; }
         .nav-item {
-            margin-bottom: 15px;
-            padding: 12px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-family: 'Cinzel', serif;
-            font-weight: bold;
-            color: var(--royal-blue);
-            transition: all 0.3s;
-            border: 1px solid transparent;
-            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 15px; padding: 12px 20px; border-radius: 30px; cursor: pointer;
+            font-family: 'Cinzel', serif; font-weight: bold; color: var(--royal-blue);
+            transition: all 0.3s; border: 1px solid transparent; display: flex; align-items: center; gap: 10px;
         }
         .nav-item:hover { background: rgba(212, 175, 55, 0.1); border-color: var(--gold-light); }
         .nav-item.active {
-            background: linear-gradient(135deg, var(--gold), var(--gold-dim));
-            color: white;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dim)); color: white;
             box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
         }
-        .nav-icon { font-size: 1.2rem; }
 
-        /* 側邊欄標籤雲 */
-        .sidebar-tags-section {
-            margin-top: auto; padding-top: 20px; border-top: 2px dashed var(--gold-light);
-        }
+        .sidebar-tags-section { margin-top: auto; padding-top: 20px; border-top: 2px dashed var(--gold-light); }
         .sidebar-title { font-family: 'Cinzel'; font-size: 0.9rem; color: var(--gold-dim); margin-bottom: 15px; text-align: center; }
         .mini-tag-cloud { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; }
 
-        /* 手機版選單切換按鈕 */
         .menu-toggle {
-            display: none; /* 桌面隱藏 */
-            position: fixed; top: 20px; left: 20px; z-index: 200;
-            background: var(--glass); border: 2px solid var(--gold);
-            width: 45px; height: 45px; border-radius: 50%;
-            justify-content: center; align-items: center;
-            font-size: 1.5rem; color: var(--gold-dim); cursor: pointer;
+            display: none; position: fixed; top: 20px; left: 20px; z-index: 200;
+            background: var(--glass); border: 2px solid var(--gold); width: 45px; height: 45px; border-radius: 50%;
+            justify-content: center; align-items: center; font-size: 1.5rem; color: var(--gold-dim); cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
@@ -116,13 +97,9 @@
            主內容區域 (Main Content Area)
            ========================================= */
         .main-content {
-            flex: 1;
-            margin-left: var(--sidebar-width); /* 留出側邊欄空間 */
-            padding: 40px;
-            min-height: 100vh;
+            flex: 1; margin-left: var(--sidebar-width); padding: 40px; min-height: 100vh;
         }
 
-        /* 頁面視圖容器 (Views) */
         .view-container { display: none; animation: fadeIn 0.5s ease; }
         .view-container.active-view { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -135,9 +112,8 @@
         .view-subtitle { font-family: 'Cinzel'; font-size: 1rem; color: var(--royal-blue); letter-spacing: 4px; margin-top: 10px; }
 
         /* =========================================
-           元件樣式 (Components: Input, Cards, etc.)
+           元件: 輸入面板 & 卡片
            ========================================= */
-        /* 輸入面板 */
         .input-panel {
             background: var(--glass); border: 2px solid var(--gold); border-radius: 8px;
             padding: 30px; box-shadow: var(--shadow-elevation); position: relative;
@@ -147,15 +123,29 @@
             content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
             border: 1px solid var(--gold-light); pointer-events: none;
         }
+        
         input, textarea {
             width: 100%; border: none; background: transparent; font-family: 'Playfair Display', serif;
             outline: none; color: var(--text-main); transition: 0.3s; resize: vertical;
         }
-        #note-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 20px; border-bottom: 2px dashed var(--gold); padding-bottom: 10px; color: var(--royal-blue); }
+        
+        /* 標題欄 */
+        #note-title { 
+            font-size: 1.6rem; font-weight: 700; margin-bottom: 15px; 
+            border-bottom: 2px dashed var(--gold); padding-bottom: 10px; color: var(--royal-blue); 
+        }
+        
+        /* [NEW] 標籤欄樣式 */
+        #note-tags {
+            font-size: 1rem; color: var(--gold-dim); margin-bottom: 20px; 
+            border-bottom: 1px solid var(--gold-light); padding-bottom: 5px; font-family: 'Cinzel', serif;
+        }
+        #note-tags::placeholder { color: #d4af3780; font-style: italic; }
+
         #note-content { font-size: 1.1rem; min-height: 120px; line-height: 1.8; }
+        
         .controls { display: flex; justify-content: flex-end; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--gold-light); }
 
-        /* 貴族按鈕 */
         .btn-baroque {
             background: linear-gradient(135deg, var(--gold), var(--gold-dim));
             color: white; border: none; padding: 12px 35px; font-family: 'Cinzel', serif;
@@ -173,7 +163,6 @@
         }
         .card:hover { border-color: var(--gold); transform: translateY(-5px); }
         
-        /* 卡片裝飾角 */
         .corner { position: absolute; width: 15px; height: 15px; border: 2px solid var(--gold); opacity: 0.3; transition: 0.3s; }
         .card:hover .corner { opacity: 1; width: 20px; height: 20px; }
         .c-tl { top: 8px; left: 8px; border-right: none; border-bottom: none; }
@@ -185,7 +174,6 @@
         .card-title { font-size: 1.8rem; color: var(--royal-blue); margin: 0 0 15px 0; line-height: 1.3; }
         .card-body { font-size: 1.1rem; line-height: 1.8; color: #444; margin-bottom: 20px; white-space: pre-wrap; }
 
-        /* 標籤與連結 */
         .tag, .zettel-link {
             display: inline-block; font-size: 0.85rem; color: var(--gold-dim);
             border: 1px solid var(--gold); padding: 4px 12px; border-radius: 20px;
@@ -196,11 +184,9 @@
         .zettel-link { border: none; border-bottom: 2px solid var(--gold); border-radius: 0; padding: 0 2px; }
         .zettel-link::before { content: '❦ '; }
 
-        /* 標籤雲頁面 */
         .mega-tag-cloud { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; padding: 20px; }
         .mega-tag-cloud .tag { font-size: 1.2rem; padding: 10px 20px; }
 
-        /* 互動與評論區 */
         .actions { display: flex; gap: 20px; padding-top: 20px; border-top: 1px solid #eee; align-items: center; }
         .action-btn { background: none; color: #bbb; border: none; font-size: 1rem; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s; }
         .action-btn:hover { color: var(--gold); }
@@ -215,36 +201,18 @@
 
         #loader, #empty-state { text-align: center; color: var(--gold-dim); font-family: 'Cinzel'; margin: 40px 0; font-size: 1.2rem; display: none; }
 
-        /* =========================================
-           📱 手機版專屬修正 (Mobile Responsive Fixes)
-           ========================================= */
         @media (max-width: 768px) {
             body { flex-direction: column; }
-
-            /* 1. 手機版側邊欄改為漢堡選單 */
-            .sidebar {
-                transform: translateX(-100%); /* 預設隱藏 */
-                width: 80%; max-width: 300px;
-                box-shadow: 2px 0 10px rgba(0,0,0,0.2);
-            }
+            .sidebar { transform: translateX(-100%); width: 80%; max-width: 300px; box-shadow: 2px 0 10px rgba(0,0,0,0.2); }
             .sidebar.open { transform: translateX(0); }
-            .menu-toggle { display: flex; } /* 顯示漢堡按鈕 */
-
-            /* 2. 主內容區域修正 */
-            .main-content {
-                margin-left: 0; /* 取消左側邊距 */
-                padding: 80px 20px 40px 20px; /* 上方留空間給漢堡按鈕，左右縮小邊距 */
-                width: 100%; /* 確保滿寬 */
-            }
-
-            /* 3. 標題與卡片尺寸調整 */
+            .menu-toggle { display: flex; }
+            .main-content { margin-left: 0; padding: 80px 20px 40px 20px; width: 100%; }
             .view-title, .brand h1 { font-size: 2.2rem; }
             .view-subtitle { font-size: 0.8rem; letter-spacing: 2px; }
             .input-panel, .card { padding: 20px; }
             #note-title { font-size: 1.3rem; }
             .card-title { font-size: 1.5rem; }
             .actions { gap: 10px; flex-wrap: wrap; }
-            .action-btn { font-size: 0.9rem; }
         }
     </style>
 </head>
@@ -260,19 +228,18 @@
         </div>
         <ul class="nav-menu">
             <li class="nav-item active" onclick="switchView('home')">
-                <span class="nav-icon">🏛️</span> Aureum
+                <span class="nav-icon">🏛️</span> 宮殿大廳 (Home)
             </li>
             <li class="nav-item" onclick="switchView('archive')">
-                <span class="nav-icon">📜</span> Archive
+                <span class="nav-icon">📜</span> 皇家檔案館 (Archive)
             </li>
             <li class="nav-item" onclick="switchView('tags')">
-                <span class="nav-icon">🏷️</span> Tags
+                <span class="nav-icon">🏷️</span> 標籤寶庫 (Tags)
             </li>
         </ul>
         <div class="sidebar-tags-section">
             <div class="sidebar-title">Quick Tags</div>
-            <div class="mini-tag-cloud" id="sidebar-tag-cloud">
-                </div>
+            <div class="mini-tag-cloud" id="sidebar-tag-cloud"></div>
         </div>
     </nav>
 
@@ -288,7 +255,8 @@
 
             <div class="input-panel">
                 <input type="text" id="note-title" placeholder="Title of your thought...">
-                <textarea id="note-content" placeholder="Write your insights... Use #tags or [[WikiLinks]]."></textarea>
+                <input type="text" id="note-tags" placeholder="Tags (e.g. Life Philosophy Design)...">
+                <textarea id="note-content" placeholder="Write your insights... Use [[WikiLinks]] to connect ideas."></textarea>
                 <div class="controls">
                     <button class="btn-baroque" onclick="addNote()">Enshrine to Cloud</button>
                 </div>
@@ -319,15 +287,14 @@
                 <h2 class="view-title">Treasury of Tags</h2>
                 <div class="view-subtitle">Explore by Concepts</div>
             </div>
-            <div class="mega-tag-cloud" id="mega-tag-cloud">
-                </div>
+            <div class="mega-tag-cloud" id="mega-tag-cloud"></div>
         </div>
 
     </main>
 
     <script>
         // =================================================================
-        // 1. Firebase 設定 (已填入你的金鑰)
+        // Firebase 設定
         // =================================================================
         const firebaseConfig = {
             apiKey: "AIzaSyCtduCS2DRpcn6oImQia_O5RlZCRAzihT8",
@@ -341,62 +308,16 @@
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // 全域資料變數
         let allNotes = [];
         let allTags = new Set();
         let currentFilter = null;
         let activeViewId = 'home';
 
         // =================================================================
-        // 2. 視圖切換與導航邏輯 (Navigation Logic)
-        // =================================================================
-        function switchView(viewName) {
-            const viewId = `view-${viewName}`;
-            activeViewId = viewName;
-
-            // 1. 更新導航選單狀態
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.innerText.toLowerCase().includes(viewName)) {
-                    item.classList.add('active');
-                }
-            });
-
-            // 2. 切換視圖顯示
-            document.querySelectorAll('.view-container').forEach(view => {
-                view.classList.remove('active-view');
-            });
-            document.getElementById(viewId).classList.add('active-view');
-
-            // 3. 如果是手機版，點擊後自動收起側邊欄
-            if (window.innerWidth <= 768) {
-                toggleSidebar();
-            }
-            
-            // 4. 根據視圖重新渲染資料
-            if (viewName === 'archive') renderArchive();
-            if (viewName === 'tags') renderTagPage();
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-        }
-
-        // 點擊主內容區時關閉側邊欄 (手機版體驗優化)
-        document.querySelector('.main-content').addEventListener('click', () => {
-             if (window.innerWidth <= 768 && document.getElementById('sidebar').classList.contains('open')) {
-                 toggleSidebar();
-             }
-        });
-
-        // =================================================================
-        // 3. 核心資料邏輯 (Core Data Logic)
+        // 核心邏輯
         // =================================================================
         function initApp() {
             document.getElementById('loader').style.display = 'block';
-            // 即時監聽資料庫
             db.collection("notes").orderBy("timestamp", "desc")
                 .onSnapshot((snapshot) => {
                     allNotes = [];
@@ -404,11 +325,9 @@
                     snapshot.forEach((doc) => {
                         const data = doc.data();
                         allNotes.push({ id: doc.id, ...data });
-                        // 收集所有標籤
                         if (data.tags) data.tags.forEach(tag => allTags.add(tag));
                     });
                     document.getElementById('loader').style.display = 'none';
-                    // 資料更新後，重新渲染當前視圖和側邊欄標籤
                     renderHome();
                     renderSidebarTags();
                     if (activeViewId === 'archive') renderArchive();
@@ -419,129 +338,142 @@
                 });
         }
 
+        // [Updated] 新增筆記 (包含標籤輸入框邏輯)
         function addNote() {
             const titleInput = document.getElementById('note-title');
+            const tagsInput = document.getElementById('note-tags');
             const contentInput = document.getElementById('note-content');
+            
             const title = titleInput.value.trim();
+            const manualTagsRaw = tagsInput.value.trim();
             const content = contentInput.value.trim();
+            
             if (!content) return;
 
-            const tags = content.match(/#[\w\u4e00-\u9fa5]+/g) || [];
+            // 1. 從標籤欄提取 (支援空格或逗號分隔)
+            let manualTags = manualTagsRaw ? manualTagsRaw.split(/[\s,]+/) : [];
+            // 自動補上 # 如果使用者沒打
+            manualTags = manualTags.map(t => t.startsWith('#') ? t : '#' + t);
+
+            // 2. 從內文提取 #tag
+            const contentTags = content.match(/#[\w\u4e00-\u9fa5]+/g) || [];
+
+            // 3. 合併並去重複
+            const finalTags = [...new Set([...manualTags, ...contentTags])];
 
             db.collection("notes").add({
                 title: title || `Untitled Fragment`,
                 content: content,
-                tags: tags,
+                tags: finalTags,
                 timestamp: Date.now(),
                 likes: 0, isBookmarked: false, comments: []
             }).then(() => {
-                titleInput.value = ''; contentInput.value = '';
+                titleInput.value = ''; 
+                tagsInput.value = '';
+                contentInput.value = '';
                 if(navigator.vibrate) navigator.vibrate(50);
-                // 新增後自動切換到首頁查看
                 switchView('home');
             }).catch(err => alert("Upload failed: " + err.message));
         }
 
-        // =================================================================
-        // 4. 渲染邏輯 (Rendering Logic)
-        // =================================================================
-        
-        // 渲染首頁 (只顯示最近 5 筆)
+        function switchView(viewName) {
+            const viewId = `view-${viewName}`;
+            activeViewId = viewName;
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.innerText.toLowerCase().includes(viewName)) item.classList.add('active');
+            });
+            document.querySelectorAll('.view-container').forEach(view => {
+                view.classList.remove('active-view');
+            });
+            document.getElementById(viewId).classList.add('active-view');
+            if (window.innerWidth <= 768) toggleSidebar();
+            
+            if (viewName === 'archive') renderArchive();
+            if (viewName === 'tags') renderTagPage();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+        document.querySelector('.main-content').addEventListener('click', () => {
+             if (window.innerWidth <= 768 && document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
+        });
+
+        // 渲染函數
         function renderHome() {
             const stream = document.getElementById('home-stream');
             stream.innerHTML = '';
-            const recentNotes = allNotes.slice(0, 5); // 取前 5 筆
+            const recentNotes = allNotes.slice(0, 5);
             recentNotes.forEach(note => stream.appendChild(createCardElement(note)));
         }
 
-        // 渲染檔案館 (支援搜尋與過濾)
         function renderArchive() {
             const stream = document.getElementById('archive-stream');
             const searchVal = document.getElementById('archive-search').value.toLowerCase();
             const filterStatus = document.getElementById('filter-status');
             const emptyState = document.getElementById('empty-state');
-            
             stream.innerHTML = '';
 
             let filtered = allNotes.filter(n => {
                 const text = (n.title + n.content + (n.tags||[]).join('')).toLowerCase();
-                // 同時滿足搜尋框和點擊的過濾條件
                 const matchesSearch = !searchVal || text.includes(searchVal);
-                const matchesFilter = !currentFilter || text.includes(currentFilter.toLowerCase());
+                const matchesFilter = !currentFilter || (n.tags && n.tags.some(t => t.toLowerCase() === currentFilter.toLowerCase())) || text.includes(currentFilter.toLowerCase());
                 return matchesSearch && matchesFilter;
             });
 
             if (currentFilter) {
                 filterStatus.style.display = 'block';
                 document.getElementById('filter-term').innerText = currentFilter;
-            } else {
-                filterStatus.style.display = 'none';
-            }
+            } else { filterStatus.style.display = 'none'; }
 
-            if (filtered.length === 0) {
-                emptyState.style.display = 'block';
-            } else {
-                emptyState.style.display = 'none';
-                filtered.forEach(note => stream.appendChild(createCardElement(note)));
-            }
+            if (filtered.length === 0) { emptyState.style.display = 'block'; } 
+            else { emptyState.style.display = 'none'; filtered.forEach(note => stream.appendChild(createCardElement(note))); }
         }
 
-        // 渲染標籤頁面
         function renderTagPage() {
             const cloud = document.getElementById('mega-tag-cloud');
             cloud.innerHTML = '';
-            if (allTags.size === 0) {
-                cloud.innerHTML = '<div style="color:#ccc;">No tags found yet.</div>';
-                return;
-            }
+            if (allTags.size === 0) { cloud.innerHTML = '<div style="color:#ccc;">No tags found yet.</div>'; return; }
             Array.from(allTags).sort().forEach(tag => {
                 const tagEl = document.createElement('span');
-                tagEl.className = 'tag';
-                tagEl.innerText = tag;
+                tagEl.className = 'tag'; tagEl.innerText = tag;
                 tagEl.onclick = () => setFilter(tag);
+                cloud.appendChild(tagEl);
             });
         }
 
-        // 渲染側邊欄小標籤雲
         function renderSidebarTags() {
              const cloud = document.getElementById('sidebar-tag-cloud');
              cloud.innerHTML = '';
-             // 只顯示前 10 個熱門或排序後的標籤，避免側邊欄太長
              Array.from(allTags).sort().slice(0, 10).forEach(tag => {
                 const tagEl = document.createElement('span');
-                tagEl.className = 'tag';
-                tagEl.style.fontSize = '0.75rem';
+                tagEl.className = 'tag'; tagEl.style.fontSize = '0.75rem';
                 tagEl.innerText = tag;
                 tagEl.onclick = () => setFilter(tag);
                 cloud.appendChild(tagEl);
             });
         }
 
-        // 設定過濾條件並跳轉到檔案館
         function setFilter(term) {
             currentFilter = term;
-            document.getElementById('archive-search').value = ''; // 清空搜尋框
+            document.getElementById('archive-search').value = '';
             switchView('archive');
         }
+        function clearFilter() { currentFilter = null; renderArchive(); }
 
-        function clearFilter() {
-            currentFilter = null;
-            renderArchive();
-        }
-
-        // 通用卡片生成函數 (核心 UI)
         function createCardElement(note) {
             const card = document.createElement('div');
             card.className = 'card';
-            
             const dateStr = new Date(note.timestamp).toLocaleString();
-
-            // 處理內容: WikiLinks 和 Tags 轉為可點擊元素
+            
             let processedContent = note.content
-                .replace(/\[\[(.*?)\]\]/g, `<span class="zettel-link" onclick="setFilter('$1')">$1</span>`)
-                .replace(/(#[\w\u4e00-\u9fa5]+)/g, `<span class="tag" onclick="setFilter('$1')">$1</span>`);
-
-            // 生成評論 HTML
+                .replace(/\[\[(.*?)\]\]/g, `<span class="zettel-link" onclick="setFilter('$1')">$1</span>`);
+            
+            // 標籤顯示
+            const tagsHtml = (note.tags || []).map(t => `<span class="tag" onclick="setFilter('${t}')">${t}</span>`).join('');
+            
             const commentsHtml = (note.comments || []).map(c => 
                 `<div class="comment-item"><strong style="color:var(--gold-dim);">Visitor:</strong> ${c}</div>`
             ).join('');
@@ -551,6 +483,7 @@
                 <div class="card-meta"><span>ID: ${note.id.slice(-4).toUpperCase()}</span><span>${dateStr}</span></div>
                 <h3 class="card-title">${note.title}</h3>
                 <div class="card-body">${processedContent}</div>
+                <div style="margin-bottom:15px;">${tagsHtml}</div>
                 <div class="actions">
                     <button class="action-btn ${note.likes>0?'active':''}" onclick="updateNote('${note.id}', {likes: ${(note.likes||0)+1}})">♥ ${note.likes||0}</button>
                     <button class="action-btn ${note.isBookmarked?'bookmarked':''}" onclick="updateNote('${note.id}', {isBookmarked: !${note.isBookmarked}})">★ Bookmark</button>
@@ -568,22 +501,9 @@
             return card;
         }
 
-        // =================================================================
-        // 5. 資料庫操作 (Update/Delete)
-        // =================================================================
-        function updateNote(id, data) {
-            db.collection("notes").doc(id).update(data);
-        }
-
-        function deleteNote(id) {
-            if(confirm("Burn this memory forever?")) db.collection("notes").doc(id).delete();
-        }
-
-        function toggleCommentSection(id) {
-            const el = document.getElementById(`comments-${id}`);
-            el.style.display = el.style.display === 'block' ? 'none' : 'block';
-        }
-
+        function updateNote(id, data) { db.collection("notes").doc(id).update(data); }
+        function deleteNote(id) { if(confirm("Burn this memory forever?")) db.collection("notes").doc(id).delete(); }
+        function toggleCommentSection(id) { const el = document.getElementById(`comments-${id}`); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
         function submitComment(id) {
             const input = document.getElementById(`input-${id}`);
             const val = input.value.trim();
@@ -594,7 +514,6 @@
             input.value = '';
         }
 
-        // 啟動應用
         initApp();
     </script>
 </body>
