@@ -10,23 +10,20 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Pinyon+Script&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-
     <style>
         /* =========================================
-           1. 核心變數與洛可可基調 (Core Styles)
+           1. 核心變數與洛可可基調
            ========================================= */
         :root {
             --gold: #d4af37;
             --gold-dim: #b8860b;
             --gold-light: #f3e5ab;
             --cream: #fffdd0;
-            --pastel-pink: #fce1e4;
             --royal-blue: #2c3e50;
             --text-main: #2b2b2b;
             --sidebar-width: 280px;
             --shadow-elevation: 0 15px 35px rgba(212, 175, 55, 0.2), 0 5px 15px rgba(0,0,0,0.05);
-            --glass: rgba(255, 253, 208, 0.85); /* 更通透的磨砂 */
+            --glass: rgba(255, 253, 208, 0.85);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
@@ -34,7 +31,6 @@
         body {
             margin: 0; padding: 0;
             background-color: var(--cream);
-            /* 複雜的絲綢紋理背景 */
             background-image: 
                 radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 60%),
                 url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
@@ -47,13 +43,12 @@
             overflow-x: hidden;
         }
 
-        /* 卷軸美化 */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: var(--cream); }
         ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, var(--gold), var(--gold-dim)); border-radius: 10px; border: 2px solid var(--cream); }
 
         /* =========================================
-           2. 側面導航欄 (Sidebar)
+           2. 側面導航欄
            ========================================= */
         .sidebar {
             width: var(--sidebar-width);
@@ -62,21 +57,14 @@
             padding: 40px 30px;
             display: flex;
             flex-direction: column;
-            position: fixed;
-            height: 100vh;
-            z-index: 100;
+            position: fixed; height: 100vh; z-index: 100;
             box-shadow: 10px 0 30px rgba(212, 175, 55, 0.15);
             transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        .brand { text-align: center; margin-bottom: 50px; position: relative; }
-        .brand h1 {
-            font-family: 'Pinyon Script', cursive; font-size: 3rem; color: var(--gold-dim); margin: 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-            animation: float 6s ease-in-out infinite;
-        }
+        .brand { text-align: center; margin-bottom: 50px; }
+        .brand h1 { font-family: 'Pinyon Script', cursive; font-size: 3rem; color: var(--gold-dim); margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); animation: float 6s ease-in-out infinite; }
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
-        
         .brand .ornament { font-size: 2rem; color: var(--gold); display: block; margin: 10px auto; opacity: 0.8; }
 
         .nav-menu { list-style: none; padding: 0; margin: 0; flex: 1; display: flex; flex-direction: column; gap: 15px; }
@@ -86,16 +74,12 @@
             transition: all 0.3s ease; border: 1px solid transparent; display: flex; align-items: center; gap: 15px;
             position: relative; overflow: hidden;
         }
-        
-        /* 導航按鈕互動特效 */
         .nav-item::before {
             content: ''; position: absolute; top: 0; left: 0; width: 0%; height: 100%;
-            background: linear-gradient(90deg, rgba(212,175,55,0.1), transparent);
-            transition: width 0.4s ease; z-index: 0;
+            background: linear-gradient(90deg, rgba(212,175,55,0.1), transparent); transition: width 0.4s ease; z-index: 0;
         }
         .nav-item:hover::before { width: 100%; }
         .nav-item:hover { color: var(--gold-dim); transform: translateX(5px); border-color: rgba(212, 175, 55, 0.3); }
-        
         .nav-item.active {
             background: linear-gradient(135deg, var(--gold), #b8860b);
             color: white; box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
@@ -112,66 +96,46 @@
             background: var(--glass); border: 2px solid var(--gold); width: 50px; height: 50px; border-radius: 50%;
             justify-content: center; align-items: center; font-size: 1.8rem; color: var(--gold-dim); cursor: pointer;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1); backdrop-filter: blur(10px);
-            transition: transform 0.3s;
         }
-        .menu-toggle:active { transform: scale(0.9); }
 
         /* =========================================
-           3. 主內容區域 (Main Content)
+           3. 主內容區域
            ========================================= */
         .main-content {
-            flex: 1; margin-left: var(--sidebar-width); padding: 50px; min-height: 100vh;
-            perspective: 1000px;
+            flex: 1; margin-left: var(--sidebar-width); padding: 50px; min-height: 100vh; perspective: 1000px;
         }
 
         .view-container { display: none; }
         .view-container.active-view { display: block; animation: fadeInView 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
         @keyframes fadeInView { from { opacity: 0; transform: translateY(20px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
-        .view-header {
-            text-align: center; margin-bottom: 50px; position: relative;
-        }
-        .view-header::after {
-            content: '❧'; display: block; font-size: 2rem; color: var(--gold-light); margin-top: 15px;
-        }
+        .view-header { text-align: center; margin-bottom: 50px; position: relative; }
+        .view-header::after { content: '❧'; display: block; font-size: 2rem; color: var(--gold-light); margin-top: 15px; }
         .view-title { font-family: 'Pinyon Script'; font-size: 4rem; color: var(--gold-dim); margin: 0; line-height: 1.2; }
         .view-subtitle { font-family: 'Cinzel'; font-size: 0.9rem; color: var(--royal-blue); letter-spacing: 5px; text-transform: uppercase; }
 
         /* =========================================
-           4. 輸入面板 & 計時器 (Input & Timer)
+           4. 輸入面板 & 計時器
            ========================================= */
         .input-panel {
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid var(--gold-light);
-            border-radius: 12px;
-            padding: 40px;
-            box-shadow: var(--shadow-elevation);
-            position: relative;
-            max-width: 850px; margin: 0 auto 50px auto;
-            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.6); border: 1px solid var(--gold-light); border-radius: 12px;
+            padding: 40px; box-shadow: var(--shadow-elevation); position: relative;
+            max-width: 850px; margin: 0 auto 50px auto; backdrop-filter: blur(20px);
             transition: box-shadow 0.3s, transform 0.3s;
         }
-        /* 聚焦時的呼吸效果 */
-        .input-panel:focus-within {
-            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.25), 0 0 0 2px rgba(212, 175, 55, 0.1);
-            transform: translateY(-2px);
-        }
-
-        /* 雙線裝飾 */
+        .input-panel:focus-within { box-shadow: 0 20px 40px rgba(212, 175, 55, 0.25); transform: translateY(-2px); }
         .input-panel::before {
             content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
             border: 1px solid rgba(212, 175, 55, 0.3); pointer-events: none; border-radius: 4px;
         }
 
-        /* 計時器樣式 [NEW] */
         .timer-display {
             position: absolute; top: -15px; right: 30px;
             background: linear-gradient(135deg, var(--gold), #b8860b);
             color: white; padding: 5px 15px; border-radius: 20px;
             font-family: 'Cinzel'; font-weight: bold; font-size: 0.9rem;
             box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
-            display: flex; align-items: center; gap: 8px;
-            opacity: 0; transition: opacity 0.5s;
+            display: flex; align-items: center; gap: 8px; opacity: 0; transition: opacity 0.5s;
         }
         .timer-display.active { opacity: 1; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); } 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); } }
@@ -180,57 +144,33 @@
             width: 100%; border: none; background: transparent; font-family: 'Playfair Display', serif;
             color: var(--text-main); transition: 0.3s; resize: none;
         }
-        
-        #note-title { 
-            font-size: 1.8rem; font-weight: 700; margin-bottom: 20px; 
-            border-bottom: 2px dashed rgba(212, 175, 55, 0.5); padding-bottom: 10px; color: var(--royal-blue); 
-        }
-        #note-title:focus { border-bottom-color: var(--gold); }
-
-        #note-tags {
-            font-size: 1rem; color: var(--gold-dim); margin-bottom: 25px; 
-            border-bottom: 1px solid transparent; padding-bottom: 5px; font-family: 'Cinzel', serif;
-        }
+        #note-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 20px; border-bottom: 2px dashed rgba(212, 175, 55, 0.5); padding-bottom: 10px; color: var(--royal-blue); }
+        #note-tags { font-size: 1rem; color: var(--gold-dim); margin-bottom: 25px; border-bottom: 1px solid transparent; padding-bottom: 5px; font-family: 'Cinzel', serif; }
         #note-tags:focus { border-bottom-color: var(--gold-light); }
-
         #note-content { font-size: 1.2rem; min-height: 150px; line-height: 1.8; }
         
         .controls { display: flex; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(212, 175, 55, 0.2); }
-
-        /* 奢華按鈕 */
         .btn-baroque {
             background: linear-gradient(135deg, var(--gold), #996515);
             color: white; border: none; padding: 14px 40px; font-family: 'Cinzel', serif;
             font-weight: bold; border-radius: 50px; cursor: pointer;
-            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3); transition: all 0.4s;
             position: relative; overflow: hidden; letter-spacing: 1px;
         }
-        .btn-baroque::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(255,255,255,0.4), transparent); opacity: 0; transition: opacity 0.3s;
-        }
         .btn-baroque:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(212, 175, 55, 0.5); }
-        .btn-baroque:hover::after { opacity: 1; }
 
         /* =========================================
-           5. 卡片流 & 卡片樣式 (Cards)
+           5. 卡片流 & 長文收合
            ========================================= */
         .stream { display: flex; flex-direction: column; gap: 40px; max-width: 850px; margin: 0 auto; }
         .card {
             background: #fff; border-radius: 8px; padding: 40px; position: relative;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: all 0.4s ease;
-            border: 1px solid rgba(0,0,0,0.03);
-            /* 卡片進場動畫 */
-            animation: slideInUp 0.5s ease-out;
+            border: 1px solid rgba(0,0,0,0.03); animation: slideInUp 0.5s ease-out;
         }
-        .card:hover {
-            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.15);
-            transform: translateY(-8px);
-            border-color: rgba(212, 175, 55, 0.3);
-        }
+        .card:hover { box-shadow: 0 20px 40px rgba(212, 175, 55, 0.15); transform: translateY(-8px); border-color: rgba(212, 175, 55, 0.3); }
         @keyframes slideInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 裝飾角 */
         .corner { position: absolute; width: 15px; height: 15px; border: 2px solid var(--gold); opacity: 0; transition: 0.4s; }
         .card:hover .corner { opacity: 1; width: 25px; height: 25px; }
         .c-tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
@@ -238,16 +178,25 @@
         .c-bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
         .c-br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
 
-        .card-meta { 
-            font-family: 'Cinzel'; font-size: 0.75rem; color: #aaa; display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #f5f5f5; padding-bottom: 10px;
-        }
-        /* 時間標記樣式 */
-        .duration-badge { color: var(--gold-dim); font-weight: bold; display: flex; align-items: center; gap: 5px; }
-
+        .card-meta { font-family: 'Cinzel'; font-size: 0.75rem; color: #aaa; display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #f5f5f5; padding-bottom: 10px; }
+        .duration-badge { color: var(--gold-dim); font-weight: bold; }
         .card-title { font-size: 2rem; color: var(--royal-blue); margin: 0 0 20px 0; line-height: 1.3; font-weight: 700; }
-        .card-body { font-size: 1.15rem; line-height: 1.9; color: #444; margin-bottom: 25px; white-space: pre-wrap; }
+        
+        /* [NEW] 長文收合樣式 */
+        .card-body { font-size: 1.15rem; line-height: 1.9; color: #444; margin-bottom: 25px; white-space: pre-wrap; position: relative; }
+        .card-body.collapsed {
+            max-height: 120px; overflow: hidden;
+            mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+        }
+        .read-more-btn {
+            display: block; width: 100%; text-align: center;
+            background: transparent; border: none; color: var(--gold-dim);
+            font-family: 'Cinzel'; font-weight: bold; cursor: pointer;
+            margin-top: -10px; padding-bottom: 10px;
+        }
+        .read-more-btn:hover { color: var(--gold); text-decoration: underline; }
 
-        /* 標籤 */
         .tag, .zettel-link {
             display: inline-block; font-size: 0.85rem; color: var(--gold-dim);
             border: 1px solid var(--gold-light); padding: 5px 15px; border-radius: 30px;
@@ -256,17 +205,20 @@
         }
         .tag:hover, .zettel-link:hover { background: var(--gold); color: white; border-color: var(--gold); transform: translateY(-2px); }
         .zettel-link { border: none; border-bottom: 2px solid var(--gold); border-radius: 0; padding: 0 2px; background: transparent; }
-        .zettel-link::before { content: '❧ '; }
+        .zettel-link::before { content: '❦ '; }
 
         .mega-tag-cloud { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; padding: 30px; }
         .mega-tag-cloud .tag { font-size: 1.2rem; padding: 12px 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
 
-        /* 互動按鈕 */
         .actions { display: flex; gap: 25px; padding-top: 25px; border-top: 1px solid #f0f0f0; align-items: center; flex-wrap: wrap; }
         .action-btn { background: none; color: #bbb; border: none; font-size: 1rem; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s; font-family: 'Cinzel'; }
         .action-btn:hover { color: var(--gold); transform: scale(1.1); }
         .action-btn.active { color: #e74c3c; animation: heartBeat 1s; }
         .action-btn.bookmarked { color: var(--gold); }
+        
+        /* [NEW] 醒目刪除按鈕 */
+        .btn-delete { color: #ffcccc !important; transition: 0.3s; margin-left: auto; }
+        .btn-delete:hover { color: red !important; background: rgba(255,0,0,0.1); border-radius: 5px; padding: 5px; }
 
         .comments-section { background: #fafafa; margin-top: 25px; padding: 25px; border-left: 4px solid var(--gold); display: none; animation: fadeIn 0.3s; }
         .comment-item { padding: 12px 0; border-bottom: 1px solid #eee; font-size: 0.95rem; }
@@ -274,34 +226,25 @@
         .comment-input { flex: 1; border: 1px solid #ddd; padding: 12px; background: white; border-radius: 4px; }
         .comment-submit { padding: 8px 20px; background: var(--gold); color: white; border: none; cursor: pointer; font-family: 'Cinzel'; border-radius: 4px; }
 
-        /* =========================================
-           6. 編輯視窗 (Modal)
-           ========================================= */
+        /* 編輯視窗 */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(44, 62, 80, 0.6); backdrop-filter: blur(8px);
             z-index: 1000; display: none; align-items: center; justify-content: center;
-            animation: fadeIn 0.3s;
         }
         .modal-content {
             background: #fff; width: 90%; max-width: 700px; padding: 50px;
             border-radius: 12px; box-shadow: 0 25px 60px rgba(0,0,0,0.4);
             border: 2px solid var(--gold); position: relative;
-            animation: zoomIn 0.3s;
         }
         .modal-header { font-family: 'Cinzel'; font-size: 1.8rem; color: var(--gold-dim); margin-bottom: 30px; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 15px; }
         .modal-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; }
         .btn-cancel { background: #f0f0f0; color: #888; box-shadow: none; }
-        .btn-cancel:hover { background: #e0e0e0; transform: none; box-shadow: none; color: #555; }
 
-        /* Loader & Empty */
         #loader { text-align: center; color: var(--gold-dim); font-family: 'Cinzel'; margin: 50px 0; font-size: 1.2rem; }
         .loader-spinner { display: inline-block; width: 30px; height: 30px; border: 3px solid var(--gold-light); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s infinite linear; margin-right: 10px; vertical-align: middle; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* =========================================
-           7. 響應式修正 (Mobile)
-           ========================================= */
         @media (max-width: 768px) {
             body { flex-direction: column; }
             .sidebar { transform: translateX(-100%); width: 85%; max-width: 320px; box-shadow: 5px 0 20px rgba(0,0,0,0.3); }
@@ -310,15 +253,9 @@
             .main-content { margin-left: 0; padding: 90px 20px 40px 20px; width: 100%; }
             .view-title { font-size: 2.5rem; }
             .input-panel, .card { padding: 25px; }
-            #note-title { font-size: 1.4rem; }
-            .card-title { font-size: 1.6rem; }
-            .actions { gap: 15px; }
-            .modal-content { padding: 25px; width: 95%; }
             .timer-display { right: 50%; transform: translateX(50%); top: -20px; width: max-content; }
         }
     </style>
-
-              <link rel="icon" href="IMG_9332.ico" type="image/x-icon">
 </head>
 <body>
 
@@ -332,13 +269,13 @@
         </div>
         <ul class="nav-menu">
             <li class="nav-item active" onclick="switchView('home')">
-                <span class="nav-icon">🏛️</span> <span class="nav-text">Aureum Palace</span>
+                <span class="nav-icon">🏛️</span> <span class="nav-text">宮殿大廳 (Home)</span>
             </li>
             <li class="nav-item" onclick="switchView('archive')">
-                <span class="nav-icon">📜</span> <span class="nav-text">Archive</span>
+                <span class="nav-icon">📜</span> <span class="nav-text">皇家檔案館 (Archive)</span>
             </li>
             <li class="nav-item" onclick="switchView('tags')">
-                <span class="nav-icon">🏷️</span> <span class="nav-text">Tags</span>
+                <span class="nav-icon">🏷️</span> <span class="nav-text">標籤寶庫 (Tags)</span>
             </li>
         </ul>
         <div class="sidebar-tags-section">
@@ -348,29 +285,22 @@
     </nav>
 
     <main class="main-content">
-        
-        <div id="loader"><span class="loader-spinner"></span>Welcome to the palace...</div>
+        <div id="loader"><span class="loader-spinner"></span>正在開啟宮殿大門...</div>
 
         <div id="view-home" class="view-container active-view">
             <div class="view-header">
                 <h2 class="view-title">The Grand Hall</h2>
                 <div class="view-subtitle">Capture the Fleeting Moment</div>
             </div>
-
             <div class="input-panel">
-                <div id="chronos-timer" class="timer-display">
-                    ⏳ 00:00
-                </div>
-
+                <div id="chronos-timer" class="timer-display">⏳ 00:00</div>
                 <input type="text" id="note-title" placeholder="Title of your thought..." onfocus="startTimer()">
-                <input type="text" id="note-tags" placeholder="Tags (e.g. #Philosophy #Life)..." onfocus="startTimer()">
-                <textarea id="note-content" placeholder="Write your insights... Use [[WikiLinks]] to connect ideas." onfocus="startTimer()"></textarea>
-                
+                <input type="text" id="note-tags" placeholder="Tags (space separated)..." onfocus="startTimer()">
+                <textarea id="note-content" placeholder="Write your insights..." onfocus="startTimer()"></textarea>
                 <div class="controls">
                     <button class="btn-baroque" onclick="addNote()">Enshrine to Cloud</button>
                 </div>
             </div>
-            
             <div style="text-align: center; margin-bottom: 30px; font-family: 'Cinzel'; color: var(--gold-dim); font-size: 0.9rem; letter-spacing: 2px;">— Recent Memories —</div>
             <div class="stream" id="home-stream"></div>
         </div>
@@ -413,9 +343,6 @@
     </div>
 
     <script>
-        // =================================================================
-        // Firebase 設定
-        // =================================================================
         const firebaseConfig = {
             apiKey: "AIzaSyCtduCS2DRpcn6oImQia_O5RlZCRAzihT8",
             authDomain: "flashpoint-sync.firebaseapp.com",
@@ -428,21 +355,15 @@
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // 變數
         let allNotes = [];
         let allTags = new Set();
         let currentFilter = null;
         let activeViewId = 'home';
         let currentEditingId = null;
-
-        // [NEW] 計時器變數
         let timerInterval = null;
         let secondsSpent = 0;
         let isTimerRunning = false;
 
-        // =================================================================
-        // 核心邏輯
-        // =================================================================
         function initApp() {
             document.getElementById('loader').style.display = 'block';
             db.collection("notes").orderBy("timestamp", "desc")
@@ -462,94 +383,69 @@
                 });
         }
 
-        // [NEW] 計時器邏輯
         function startTimer() {
             if (isTimerRunning) return;
             isTimerRunning = true;
             document.getElementById('chronos-timer').classList.add('active');
-            
             timerInterval = setInterval(() => {
                 secondsSpent++;
-                updateTimerDisplay();
+                const m = Math.floor(secondsSpent / 60).toString().padStart(2, '0');
+                const s = (secondsSpent % 60).toString().padStart(2, '0');
+                document.getElementById('chronos-timer').innerText = `⏳ ${m}:${s}`;
             }, 1000);
         }
 
         function stopAndResetTimer() {
             clearInterval(timerInterval);
             isTimerRunning = false;
-            const finalTime = secondsSpent; // 保存最後時間
+            const finalTime = secondsSpent;
             secondsSpent = 0;
-            updateTimerDisplay(); // 歸零介面
+            document.getElementById('chronos-timer').innerText = `⏳ 00:00`;
             document.getElementById('chronos-timer').classList.remove('active');
             return finalTime;
-        }
-
-        function updateTimerDisplay() {
-            const m = Math.floor(secondsSpent / 60).toString().padStart(2, '0');
-            const s = (secondsSpent % 60).toString().padStart(2, '0');
-            document.getElementById('chronos-timer').innerText = `⏳ ${m}:${s}`;
         }
 
         function formatDuration(secs) {
             if (!secs) return '';
             const m = Math.floor(secs / 60);
             const s = secs % 60;
-            if (m === 0) return `${s}s`;
-            return `${m}m ${s}s`;
+            return m === 0 ? `${s}s` : `${m}m ${s}s`;
         }
 
-        // 新增筆記
         function addNote() {
-            const titleInput = document.getElementById('note-title');
-            const tagsInput = document.getElementById('note-tags');
-            const contentInput = document.getElementById('note-content');
-            
-            const title = titleInput.value.trim();
-            const manualTagsRaw = tagsInput.value.trim();
-            const content = contentInput.value.trim();
-            
+            const title = document.getElementById('note-title').value.trim();
+            const tagsRaw = document.getElementById('note-tags').value.trim();
+            const content = document.getElementById('note-content').value.trim();
             if (!content) return;
 
-            // 停止計時並獲取時間
             const duration = stopAndResetTimer();
-
-            let manualTags = manualTagsRaw ? manualTagsRaw.split(/[\s,]+/) : [];
+            let manualTags = tagsRaw ? tagsRaw.split(/[\s,]+/) : [];
             manualTags = manualTags.map(t => t.startsWith('#') ? t : '#' + t);
             const contentTags = content.match(/#[\w\u4e00-\u9fa5]+/g) || [];
             const finalTags = [...new Set([...manualTags, ...contentTags])];
 
             db.collection("notes").add({
-                title: title || `Untitled Fragment`,
-                content: content,
-                tags: finalTags,
-                timestamp: Date.now(),
-                duration: duration, // [NEW] 儲存時間
-                likes: 0, isBookmarked: false, comments: []
+                title: title || `Untitled Fragment`, content: content, tags: finalTags,
+                timestamp: Date.now(), duration: duration, likes: 0, isBookmarked: false, comments: []
             }).then(() => {
-                titleInput.value = ''; tagsInput.value = ''; contentInput.value = '';
+                document.getElementById('note-title').value = '';
+                document.getElementById('note-tags').value = '';
+                document.getElementById('note-content').value = '';
                 if(navigator.vibrate) navigator.vibrate([50, 30, 50]);
                 switchView('home');
             });
         }
 
-        // 視圖切換
         function switchView(viewName) {
-            const viewId = `view-${viewName}`;
             activeViewId = viewName;
-            
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            // 模糊比對找出對應的按鈕加亮
             document.querySelectorAll('.nav-item').forEach(item => {
-                 if(item.innerText.toLowerCase().includes(viewName === 'home' ? 'home' : viewName === 'archive' ? 'archive' : 'tags')) {
-                     item.classList.add('active');
-                 }
+                 if(item.innerText.toLowerCase().includes(viewName === 'home' ? 'home' : viewName === 'archive' ? 'archive' : 'tags')) item.classList.add('active');
             });
-
             document.querySelectorAll('.view-container').forEach(view => view.classList.remove('active-view'));
-            document.getElementById(viewId).classList.add('active-view');
+            document.getElementById(`view-${viewName}`).classList.add('active-view');
             
-            if (window.innerWidth <= 768) toggleSidebar();
-            
+            if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
             if (viewName === 'archive') renderArchive();
             if (viewName === 'tags') renderTagPage();
             if (viewName === 'home') renderHome();
@@ -561,7 +457,6 @@
              if (window.innerWidth <= 768 && document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
         });
 
-        // 編輯功能
         function openEditModal(id) {
             const note = allNotes.find(n => n.id === id);
             if (!note) return;
@@ -572,10 +467,7 @@
             document.getElementById('edit-modal').style.display = 'flex';
         }
 
-        function closeEditModal() {
-            document.getElementById('edit-modal').style.display = 'none';
-            currentEditingId = null;
-        }
+        function closeEditModal() { document.getElementById('edit-modal').style.display = 'none'; currentEditingId = null; }
 
         function saveEdit() {
             if (!currentEditingId) return;
@@ -594,31 +486,27 @@
             }).then(closeEditModal);
         }
 
-        // 渲染邏輯
         function renderHome() {
             const stream = document.getElementById('home-stream');
             stream.innerHTML = '';
-            const recentNotes = allNotes.slice(0, 5);
-            recentNotes.forEach(note => stream.appendChild(createCardElement(note)));
+            allNotes.slice(0, 5).forEach(note => stream.appendChild(createCardElement(note)));
         }
 
         function renderArchive() {
             const stream = document.getElementById('archive-stream');
             const searchVal = document.getElementById('archive-search').value.toLowerCase();
-            const filterStatus = document.getElementById('filter-status');
             stream.innerHTML = '';
-
             let filtered = allNotes.filter(n => {
                 const text = (n.title + n.content + (n.tags||[]).join('')).toLowerCase();
                 const matchesSearch = !searchVal || text.includes(searchVal);
-                const matchesFilter = !currentFilter || (n.tags && n.tags.some(t => t.toLowerCase() === currentFilter.toLowerCase())) || text.includes(currentFilter.toLowerCase());
+                const matchesFilter = !currentFilter || (n.tags && n.tags.some(t => t.toLowerCase() === currentFilter.toLowerCase()));
                 return matchesSearch && matchesFilter;
             });
 
             if (currentFilter) {
-                filterStatus.style.display = 'block';
+                document.getElementById('filter-status').style.display = 'block';
                 document.getElementById('filter-term').innerText = currentFilter;
-            } else { filterStatus.style.display = 'none'; }
+            } else { document.getElementById('filter-status').style.display = 'none'; }
 
             if (filtered.length === 0) document.getElementById('empty-state').style.display = 'block'; 
             else { 
@@ -651,45 +539,37 @@
             });
         }
 
-        function setFilter(term) {
-            currentFilter = term;
-            document.getElementById('archive-search').value = '';
-            switchView('archive');
-        }
+        function setFilter(term) { currentFilter = term; document.getElementById('archive-search').value = ''; switchView('archive'); }
         function clearFilter() { currentFilter = null; renderArchive(); }
 
         function createCardElement(note) {
             const card = document.createElement('div');
             card.className = 'card';
             const dateStr = new Date(note.timestamp).toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute:'2-digit' });
-            
-            // [NEW] 顯示時間
             const durationHtml = note.duration ? `<span class="duration-badge">⏳ ${formatDuration(note.duration)}</span>` : '';
 
-            let processedContent = note.content
-                .replace(/\[\[(.*?)\]\]/g, `<span class="zettel-link" onclick="setFilter('$1')">$1</span>`);
-            
+            let processedContent = note.content.replace(/\[\[(.*?)\]\]/g, `<span class="zettel-link" onclick="setFilter('$1')">$1</span>`);
             const tagsHtml = (note.tags || []).map(t => `<span class="tag" onclick="setFilter('${t}')">${t}</span>`).join('');
-            
-            const commentsHtml = (note.comments || []).map(c => 
-                `<div class="comment-item"><strong style="color:var(--gold-dim);">Visitor:</strong> ${c}</div>`
-            ).join('');
+            const commentsHtml = (note.comments || []).map(c => `<div class="comment-item"><strong style="color:var(--gold-dim);">Visitor:</strong> ${c}</div>`).join('');
+
+            // 長文收合邏輯
+            const isLong = note.content.length > 150;
+            const contentHtml = isLong 
+                ? `<div class="card-body collapsed" id="body-${note.id}">${processedContent}</div><button class="read-more-btn" onclick="document.getElementById('body-${note.id}').classList.remove('collapsed'); this.style.display='none'">...Read More ❦</button>`
+                : `<div class="card-body">${processedContent}</div>`;
 
             card.innerHTML = `
                 <div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div>
-                <div class="card-meta">
-                    <span>${dateStr}</span>
-                    ${durationHtml}
-                </div>
+                <div class="card-meta"><span>${dateStr}</span>${durationHtml}</div>
                 <h3 class="card-title">${note.title}</h3>
-                <div class="card-body">${processedContent}</div>
+                ${contentHtml}
                 <div style="margin-bottom:20px;">${tagsHtml}</div>
                 <div class="actions">
                     <button class="action-btn ${note.likes>0?'active':''}" onclick="updateNote('${note.id}', {likes: ${(note.likes||0)+1}})">♥ ${note.likes||0}</button>
-                    <button class="action-btn ${note.isBookmarked?'bookmarked':''}" onclick="updateNote('${note.id}', {isBookmarked: !${note.isBookmarked}})">★ Bookmark</button>
-                    <button class="action-btn" onclick="toggleCommentSection('${note.id}')">✎ Comment (${(note.comments||[]).length})</button>
+                    <button class="action-btn ${note.isBookmarked?'bookmarked':''}" onclick="updateNote('${note.id}', {isBookmarked: !${note.isBookmarked}})">★</button>
+                    <button class="action-btn" onclick="toggleCommentSection('${note.id}')">✎ (${(note.comments||[]).length})</button>
                     <button class="action-btn" onclick="openEditModal('${note.id}')" style="color:var(--royal-blue);">✐ Edit</button>
-                    <button class="action-btn" style="margin-left:auto; color:#ddd;" onclick="deleteNote('${note.id}')">✕</button>
+                    <button class="action-btn btn-delete" onclick="deleteNote('${note.id}')">🗑️ Delete</button>
                 </div>
                 <div id="comments-${note.id}" class="comments-section">
                     <div style="max-height:200px; overflow-y:auto;">${commentsHtml}</div>
@@ -703,7 +583,7 @@
         }
 
         function updateNote(id, data) { db.collection("notes").doc(id).update(data); }
-        function deleteNote(id) { if(confirm("Burn this memory forever?")) db.collection("notes").doc(id).delete(); }
+        function deleteNote(id) { if(confirm("Permanently remove this memory?")) db.collection("notes").doc(id).delete(); }
         function toggleCommentSection(id) { const el = document.getElementById(`comments-${id}`); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
         function submitComment(id) {
             const input = document.getElementById(`input-${id}`);
