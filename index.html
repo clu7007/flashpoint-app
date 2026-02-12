@@ -7,6 +7,7 @@
     
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Pinyon+Script&display=swap" rel="stylesheet">
     
@@ -149,7 +150,15 @@
         #note-tags:focus { border-bottom-color: var(--gold-light); }
         #note-content { font-size: 1.2rem; min-height: 150px; line-height: 1.8; }
         
-        .controls { display: flex; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(212, 175, 55, 0.2); }
+        .controls { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(212, 175, 55, 0.2); }
+        
+        /* [NEW] 上傳按鈕與預覽區 */
+        .upload-area { display: flex; align-items: center; gap: 10px; }
+        .upload-label { cursor: pointer; font-size: 1.5rem; color: var(--gold-dim); transition: 0.3s; display: flex; align-items: center; }
+        .upload-label:hover { transform: scale(1.1); color: var(--gold); }
+        #file-preview-name { font-size: 0.9rem; color: var(--royal-blue); font-family: 'Cinzel'; }
+        #upload-progress { font-size: 0.8rem; color: var(--gold); margin-left: 10px; display: none; }
+
         .btn-baroque {
             background: linear-gradient(135deg, var(--gold), #996515);
             color: white; border: none; padding: 14px 40px; font-family: 'Cinzel', serif;
@@ -158,6 +167,7 @@
             position: relative; overflow: hidden; letter-spacing: 1px;
         }
         .btn-baroque:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(212, 175, 55, 0.5); }
+        .btn-baroque:disabled { filter: grayscale(1); cursor: not-allowed; }
 
         /* =========================================
            5. 卡片流 & 長文收合
@@ -182,6 +192,18 @@
         .duration-badge { color: var(--gold-dim); font-weight: bold; }
         .card-title { font-size: 2rem; color: var(--royal-blue); margin: 0 0 20px 0; line-height: 1.3; font-weight: 700; }
         
+        /* [NEW] 多媒體展示樣式 */
+        .card-media { margin-bottom: 20px; text-align: center; }
+        .card-media img, .card-media video {
+            max-width: 100%; border-radius: 4px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 4px solid #fff; outline: 1px solid var(--gold-light);
+        }
+        .media-link { 
+            display: inline-block; padding: 10px 20px; background: #f9f9f9; color: var(--royal-blue); 
+            border: 1px solid #eee; border-radius: 4px; text-decoration: none; font-family: 'Cinzel';
+        }
+        .media-link:hover { background: var(--cream); border-color: var(--gold); }
+
         /* 長文收合樣式 */
         .card-body { font-size: 1.15rem; line-height: 1.9; color: #444; margin-bottom: 25px; white-space: pre-wrap; position: relative; }
         .card-body.collapsed {
@@ -270,13 +292,13 @@
         </div>
         <ul class="nav-menu">
             <li class="nav-item active" onclick="switchView('home')">
-                <span class="nav-icon">🏛️</span> <span class="nav-text">Aureum</span>
+                <span class="nav-icon">🏛️</span> <span class="nav-text">宮殿大廳 (Home)</span>
             </li>
             <li class="nav-item" onclick="switchView('archive')">
-                <span class="nav-icon">📜</span> <span class="nav-text">Repositories</span>
+                <span class="nav-icon">📜</span> <span class="nav-text">皇家檔案館 (Archive)</span>
             </li>
             <li class="nav-item" onclick="switchView('tags')">
-                <span class="nav-icon">🏷️</span> <span class="nav-text">Appellation</span>
+                <span class="nav-icon">🏷️</span> <span class="nav-text">標籤寶庫 (Tags)</span>
             </li>
         </ul>
         <div class="sidebar-tags-section">
@@ -286,7 +308,7 @@
     </nav>
 
     <main class="main-content">
-        <div id="loader"><span class="loader-spinner"></span>Welcome to the grand palace...</div>
+        <div id="loader"><span class="loader-spinner"></span>正在開啟宮殿大門...</div>
 
         <div id="view-home" class="view-container active-view">
             <div class="view-header">
@@ -298,8 +320,16 @@
                 <input type="text" id="note-title" placeholder="Title of your thought..." onfocus="startTimer()">
                 <input type="text" id="note-tags" placeholder="Tags (space separated)..." onfocus="startTimer()">
                 <textarea id="note-content" placeholder="Write your insights..." onfocus="startTimer()"></textarea>
+                
                 <div class="controls">
-                    <button class="btn-baroque" onclick="addNote()">Enshrine to Cloud</button>
+                    <div class="upload-area">
+                        <label for="file-upload" class="upload-label" title="Attach Image/Video/File">📎</label>
+                        <input type="file" id="file-upload" hidden onchange="handleFileSelect(this)">
+                        <span id="file-preview-name"></span>
+                        <span id="upload-progress">Uploading...</span>
+                    </div>
+
+                    <button class="btn-baroque" id="submit-btn" onclick="addNote()">Enshrine to Cloud</button>
                 </div>
             </div>
             <div style="text-align: center; margin-bottom: 30px; font-family: 'Cinzel'; color: var(--gold-dim); font-size: 0.9rem; letter-spacing: 2px;">— Recent Memories —</div>
@@ -355,6 +385,7 @@
         };
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        const storage = firebase.storage();
 
         let allNotes = [];
         let allTags = new Set();
@@ -364,6 +395,7 @@
         let timerInterval = null;
         let secondsSpent = 0;
         let isTimerRunning = false;
+        let selectedFile = null;
 
         function initApp() {
             document.getElementById('loader').style.display = 'block';
@@ -384,6 +416,7 @@
                 });
         }
 
+        // --- 計時器 ---
         function startTimer() {
             if (isTimerRunning) return;
             isTimerRunning = true;
@@ -413,11 +446,26 @@
             return m === 0 ? `${s}s` : `${m}m ${s}s`;
         }
 
+        // --- 檔案處理 ---
+        function handleFileSelect(input) {
+            if (input.files && input.files[0]) {
+                selectedFile = input.files[0];
+                document.getElementById('file-preview-name').innerText = selectedFile.name;
+            }
+        }
+
+        // --- 新增筆記 (含上傳邏輯) ---
         function addNote() {
             const title = document.getElementById('note-title').value.trim();
             const tagsRaw = document.getElementById('note-tags').value.trim();
             const content = document.getElementById('note-content').value.trim();
-            if (!content) return;
+            
+            // 允許只上傳圖片不寫字，或只寫字不上傳
+            if (!content && !selectedFile) return;
+
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Processing...";
 
             const duration = stopAndResetTimer();
             let manualTags = tagsRaw ? tagsRaw.split(/[\s,]+/) : [];
@@ -425,18 +473,60 @@
             const contentTags = content.match(/#[\w\u4e00-\u9fa5]+/g) || [];
             const finalTags = [...new Set([...manualTags, ...contentTags])];
 
-            db.collection("notes").add({
-                title: title || `Untitled Fragment`, content: content, tags: finalTags,
-                timestamp: Date.now(), duration: duration, likes: 0, isBookmarked: false, comments: []
-            }).then(() => {
-                document.getElementById('note-title').value = '';
-                document.getElementById('note-tags').value = '';
-                document.getElementById('note-content').value = '';
-                if(navigator.vibrate) navigator.vibrate([50, 30, 50]);
-                switchView('home');
-            });
+            // 核心儲存函數
+            const saveToFirestore = (fileUrl = null, fileType = null) => {
+                db.collection("notes").add({
+                    title: title || `Untitled Fragment`, content: content, tags: finalTags,
+                    timestamp: Date.now(), duration: duration, likes: 0, isBookmarked: false, comments: [],
+                    fileUrl: fileUrl, fileType: fileType // [NEW] 儲存檔案資訊
+                }).then(() => {
+                    // 重置表單
+                    document.getElementById('note-title').value = '';
+                    document.getElementById('note-tags').value = '';
+                    document.getElementById('note-content').value = '';
+                    document.getElementById('file-upload').value = ''; // 清空檔案輸入
+                    document.getElementById('file-preview-name').innerText = '';
+                    document.getElementById('upload-progress').style.display = 'none';
+                    selectedFile = null;
+                    
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Enshrine to Cloud";
+                    if(navigator.vibrate) navigator.vibrate([50, 30, 50]);
+                    switchView('home');
+                }).catch(err => {
+                    alert("Error: " + err.message);
+                    submitBtn.disabled = false;
+                });
+            };
+
+            // 如果有檔案，先上傳
+            if (selectedFile) {
+                document.getElementById('upload-progress').style.display = 'inline';
+                const storageRef = storage.ref(`uploads/${Date.now()}_${selectedFile.name}`);
+                const uploadTask = storageRef.put(selectedFile);
+
+                uploadTask.on('state_changed', 
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        document.getElementById('upload-progress').innerText = `Uploading ${Math.round(progress)}%...`;
+                    }, 
+                    (error) => {
+                        alert("Upload failed: " + error.message);
+                        submitBtn.disabled = false;
+                    }, 
+                    () => {
+                        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                            saveToFirestore(downloadURL, selectedFile.type);
+                        });
+                    }
+                );
+            } else {
+                // 沒檔案直接存
+                saveToFirestore();
+            }
         }
 
+        // --- 視圖切換 ---
         function switchView(viewName) {
             activeViewId = viewName;
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -458,6 +548,7 @@
              if (window.innerWidth <= 768 && document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
         });
 
+        // --- 編輯 ---
         function openEditModal(id) {
             const note = allNotes.find(n => n.id === id);
             if (!note) return;
@@ -475,8 +566,7 @@
             const title = document.getElementById('edit-title').value.trim();
             const tagsRaw = document.getElementById('edit-tags').value.trim();
             const content = document.getElementById('edit-content').value.trim();
-            if (!content) return;
-
+            
             let manualTags = tagsRaw ? tagsRaw.split(/[\s,]+/) : [];
             manualTags = manualTags.map(t => t.startsWith('#') ? t : '#' + t);
             const contentTags = content.match(/#[\w\u4e00-\u9fa5]+/g) || [];
@@ -487,6 +577,7 @@
             }).then(closeEditModal);
         }
 
+        // --- 渲染 ---
         function renderHome() {
             const stream = document.getElementById('home-stream');
             stream.innerHTML = '';
@@ -549,11 +640,22 @@
             const dateStr = new Date(note.timestamp).toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute:'2-digit' });
             const durationHtml = note.duration ? `<span class="duration-badge">⏳ ${formatDuration(note.duration)}</span>` : '';
 
+            // [NEW] 媒體展示區塊
+            let mediaHtml = '';
+            if (note.fileUrl) {
+                if (note.fileType && note.fileType.startsWith('image/')) {
+                    mediaHtml = `<div class="card-media"><img src="${note.fileUrl}" loading="lazy" alt="Image"></div>`;
+                } else if (note.fileType && note.fileType.startsWith('video/')) {
+                    mediaHtml = `<div class="card-media"><video src="${note.fileUrl}" controls></video></div>`;
+                } else {
+                    mediaHtml = `<div class="card-media"><a href="${note.fileUrl}" target="_blank" class="media-link">📎 Download Attachment</a></div>`;
+                }
+            }
+
             let processedContent = note.content.replace(/\[\[(.*?)\]\]/g, `<span class="zettel-link" onclick="setFilter('$1')">$1</span>`);
             const tagsHtml = (note.tags || []).map(t => `<span class="tag" onclick="setFilter('${t}')">${t}</span>`).join('');
             const commentsHtml = (note.comments || []).map(c => `<div class="comment-item"><strong style="color:var(--gold-dim);">Visitor:</strong> ${c}</div>`).join('');
 
-            // [NEW] 長文收合邏輯修復版 (使用相對定位解決ID衝突)
             const isLong = note.content.length > 150;
             const contentHtml = isLong 
                 ? `<div class="card-body collapsed">${processedContent}</div><button class="read-more-btn" onclick="this.previousElementSibling.classList.remove('collapsed'); this.style.display='none'">...Read More ❦</button>`
@@ -563,6 +665,7 @@
                 <div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div>
                 <div class="card-meta"><span>${dateStr}</span>${durationHtml}</div>
                 <h3 class="card-title">${note.title}</h3>
+                ${mediaHtml}
                 ${contentHtml}
                 <div style="margin-bottom:20px;">${tagsHtml}</div>
                 <div class="actions">
@@ -570,7 +673,7 @@
                     <button class="action-btn ${note.isBookmarked?'bookmarked':''}" onclick="updateNote('${note.id}', {isBookmarked: !${note.isBookmarked}})">★</button>
                     <button class="action-btn" onclick="toggleCommentSection('${note.id}')">✎ (${(note.comments||[]).length})</button>
                     <button class="action-btn" onclick="openEditModal('${note.id}')" style="color:var(--royal-blue);">✐ Edit</button>
-                    <button class="action-btn btn-delete" onclick="deleteNote('${note.id}')">🗑️ Delete</button>
+                    <button class="action-btn btn-delete" onclick="deleteNote('${note.id}', '${note.fileUrl}')">🗑️ Delete</button>
                 </div>
                 <div id="comments-${note.id}" class="comments-section">
                     <div style="max-height:200px; overflow-y:auto;">${commentsHtml}</div>
@@ -584,7 +687,22 @@
         }
 
         function updateNote(id, data) { db.collection("notes").doc(id).update(data); }
-        function deleteNote(id) { if(confirm("Permanently remove this memory?")) db.collection("notes").doc(id).delete(); }
+        
+        // [NEW] 嘗試刪除檔案與筆記
+        function deleteNote(id, fileUrl) { 
+            if(confirm("Permanently remove this memory and its file?")) {
+                // 先刪除筆記
+                db.collection("notes").doc(id).delete();
+                // 如果有檔案，嘗試刪除 (簡單實作，不保證權限)
+                if (fileUrl) {
+                    try {
+                        const fileRef = firebase.storage().refFromURL(fileUrl);
+                        fileRef.delete().catch(err => console.log("File delete error (usually perm issue):", err));
+                    } catch(e) { console.log(e); }
+                }
+            } 
+        }
+
         function toggleCommentSection(id) { const el = document.getElementById(`comments-${id}`); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
         function submitComment(id) {
             const input = document.getElementById(`input-${id}`);
